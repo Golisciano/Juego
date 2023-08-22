@@ -13,7 +13,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 
 public class MainGameScreen implements Screen {
-	public static final float SPEED = 180; 
+	public static final float SPEED = 200; 
+	public static final int SAMURAI_WIDTH = 110; 
+	public static final int SAMURAI_HEIGHT = 170; 
 
 	private Animation animacion ;  
 	private float tiempo; 
@@ -61,6 +63,9 @@ public class MainGameScreen implements Screen {
 		if(Gdx.input.isKeyPressed(Keys.W)) {  //CONTROL PARA SUBIR 
 			y += SPEED * Gdx.graphics.getDeltaTime() ; 
 			
+			if (y + SAMURAI_HEIGHT > Gdx.graphics.getHeight() ) {
+				y = Gdx.graphics.getHeight() - SAMURAI_HEIGHT; 
+			}
 			
 		} 
 		
@@ -83,6 +88,9 @@ public class MainGameScreen implements Screen {
 		if(Gdx.input.isKeyPressed(Keys.D)) { //CONTOL PARA LA DERECHA 
 			x += SPEED * Gdx.graphics.getDeltaTime(); 
 			
+			if (x + SAMURAI_WIDTH > Gdx.graphics.getWidth() ) {
+				x = Gdx.graphics.getWidth() - SAMURAI_WIDTH; 
+			}
 		//	if (x + badlogic.jpg > Gdx.graphics.getWidth()) {
 				
 		//	}

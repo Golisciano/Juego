@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 public class MainMenuScreen implements Screen {
@@ -16,6 +18,15 @@ public class MainMenuScreen implements Screen {
 	private static final int EXIT_BUTTON_Y = 100; //PARA QUE NO SE SOBREPONGAN LOS BOTONES 
 	private static final int PLAY_BUTTON_Y = 250; 
 	private Texture texture;
+	private TextureRegion [] regionsMovimientos; 
+	private Texture imagen; 
+	private Texture texture2;
+	private TextureRegion frameActual;
+	private Animation animacion ;  
+	private float tiempo;
+	float x ;
+	float y;
+	
 	SamuraiGame game; 
 	
 	Texture playButtonActive; 
@@ -23,12 +34,23 @@ public class MainMenuScreen implements Screen {
 	Texture exitButtonActive; 
 	Texture exitButtonInactive; 
 	public MainMenuScreen (SamuraiGame game) {
-		this.game = game; 
+		this.game = game;
+		this.x = x; 
+		this.y = y; 
 		playButtonActive = new Texture ("play_button_active.png"); 
 		playButtonInactive = new Texture ("play_button_inactive.png"); 
 		exitButtonActive = new Texture ("exit_button_active.png"); 
 		exitButtonInactive = new Texture ("exit_button_inactive_2.png"); 
 		
+		imagen = new Texture(Gdx.files.internal("samurai_assets_stan2_re.png")); //CARGA LA IMAGEN
+		TextureRegion [][] tmp = TextureRegion.split(imagen, //UBICA LA REGION DE LA IMAGEN
+				imagen.getWidth()/6, imagen.getHeight()); //DIVIDE EN PIEZAS LA IMAGEN SEGUN LA CANTIDAD DE IMAGENES Y LA ALTURA
+		
+		regionsMovimientos = new TextureRegion[6] ; 
+		for (int i = 0 ; i<6; i++ ) regionsMovimientos[i] = tmp[0][i]; //SIRVE PARA PASAR DE LA MATRIZ AL ARRAY
+		animacion  = new Animation(2/0f,regionsMovimientos); //CREA LA ANIMCAION Y LA DURACION DE LOS FRAMES
+		tiempo = 0f; //INICIALIZA EL TIEMPO 
+
 	} 
 	
 	@Override
@@ -44,6 +66,9 @@ public class MainMenuScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT); 
 		game.batch.begin();
 		game.batch.draw(texture ,0 ,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight() );
+		tiempo += Gdx.graphics.getDeltaTime(); //ES EL TIEMPO QUE PASO DESDE EL ULTIMO RENDER
+		frameActual = (TextureRegion) animacion.getKeyFrame(tiempo, true); //HACE UN LOOP
+		game.batch.draw(frameActual ,x ,y); //DIBUJA EL FRAME
 		
 		int x = SamuraiGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2 ; //ACTIVA Y DESACTIVA EL BOTON DE SALIDA
 		if (Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x && SamuraiGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && Gdx.input.getY() > EXIT_BUTTON_Y  ) 
