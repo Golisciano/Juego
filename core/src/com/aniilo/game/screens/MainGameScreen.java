@@ -1,14 +1,19 @@
 package com.aniilo.game.screens;
 
 import com.aniilo.game.SamuraiGame;
+import com.aniilo.game.world.GameMap;
+import com.aniilo.game.world.TileType;
+import com.aniilo.game.world.TiledGameMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.ScreenUtils;
 
 
@@ -24,6 +29,7 @@ public class MainGameScreen implements Screen {
 	private Texture imagen; 
 	private Texture texture;
 	private TextureRegion frameActual; 
+	private OrthographicCamera cam;
 	
 	int walk; 
 	float stateTime;
@@ -32,9 +38,13 @@ public class MainGameScreen implements Screen {
  
 	
 	SamuraiGame game; 
+	GameMap tiledMap;
+	GameMap gameMap;
+
+	public MainGameScreen (SamuraiGame tiledMap) {
 	
-	public MainGameScreen (SamuraiGame game) {
 		this.game = game; 
+
 		this.x = x; 
 		this.y = y; 
 		
@@ -51,15 +61,32 @@ public class MainGameScreen implements Screen {
 	} 
 	
 
+	
 	@Override
 	public void show () {
-		texture = new Texture(Gdx.files.internal("fondo_villa.jpg"));
+		cam = new OrthographicCamera();
+		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.update();
+		
+		tiledMap = new TiledGameMap();
+	
+	}
+	
+	public void create () {
+		
+		cam = new OrthographicCamera();
+		cam.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		cam.update();
+		
+		tiledMap = new TiledGameMap();
+		tiledMap.render(cam);
 	
 	}
 
 	@Override
 	public void render (float delta) {
 		
+	
 		if(Gdx.input.isKeyPressed(Keys.W)) {  //CONTROL PARA SUBIR 
 			y += SPEED * Gdx.graphics.getDeltaTime() ; 
 			
@@ -91,9 +118,7 @@ public class MainGameScreen implements Screen {
 			if (x + SAMURAI_WIDTH > Gdx.graphics.getWidth() ) {
 				x = Gdx.graphics.getWidth() - SAMURAI_WIDTH; 
 			}
-		//	if (x + badlogic.jpg > Gdx.graphics.getWidth()) {
-				
-		//	}
+		
 		}
 		
 	
@@ -106,13 +131,26 @@ public class MainGameScreen implements Screen {
 		game.batch.draw(texture ,0 ,0, Gdx.graphics.getWidth(),Gdx.graphics.getHeight() );
 		game.batch.draw(frameActual ,x ,y); //DIBUJA EL FRAME
 		game.batch.end();
-
-
+		
+		batch.setProjectionMatrix(cam.combined);
+		
+		
+		
+		if(Gdx.input.isTouched()) {
+			cam.translate(Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
+			cam.update();
+		}
+		
+		if (Gdx.input.justTouched()) {
+			Vector3 pos = cam.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
+			TileType type = tiledMap.getTileTYpeByLocation(SAMURAI_HEIGHT, pos.x, pos.y);
+			
+		}
+			gameMap.render(cam);
+			gameMap = new TiledGameMap();
+		
 	}
 
-	
-		
-	
 
 	@Override
 	public void resize (int width, int height) {

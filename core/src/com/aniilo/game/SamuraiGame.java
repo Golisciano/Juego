@@ -2,6 +2,8 @@ package com.aniilo.game;
 
 import com.aniilo.game.screens.MainGameScreen;
 import com.aniilo.game.screens.MainMenuScreen;
+import com.aniilo.game.world.GameMap;
+import com.aniilo.game.world.TiledGameMap;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -15,12 +17,16 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 public class SamuraiGame extends Game {
 	
+
+	
 	public static final int WIDTH = 1200; //ANCHO DE LA PANTALLA
 	public static final int HEIGHT = 700; // ALTO DE LA PANTALLA 
 	public SpriteBatch batch;
 	
 	private OrthographicCamera cam;
 	private StretchViewport puntoVista;
+	GameMap gameMap;
+	
 	
 	@Override
 	public void create () {
@@ -33,12 +39,13 @@ public class SamuraiGame extends Game {
 		cam.update();
 				
 		this.setScreen(new MainMenuScreen(this));
-	}
+}
 
 	@Override
 	public void render () {
 		batch.setProjectionMatrix(cam.combined);
 		super.render();
+	
 	}
 	
 	@Override

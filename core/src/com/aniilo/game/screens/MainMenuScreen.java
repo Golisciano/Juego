@@ -1,6 +1,8 @@
 package com.aniilo.game.screens;
 
 import com.aniilo.game.SamuraiGame;
+import com.aniilo.game.world.GameMap;
+import com.aniilo.game.world.TiledGameMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -28,11 +30,13 @@ public class MainMenuScreen implements Screen {
 	float y;
 	
 	SamuraiGame game; 
+	GameMap gameMap;
 	
 	Texture playButtonActive; 
 	Texture playButtonInactive; 
 	Texture exitButtonActive; 
 	Texture exitButtonInactive; 
+	
 	public MainMenuScreen (SamuraiGame game) {
 		this.game = game;
 		this.x = x; 
@@ -50,12 +54,17 @@ public class MainMenuScreen implements Screen {
 		for (int i = 0 ; i<6; i++ ) regionsMovimientos[i] = tmp[0][i]; //SIRVE PARA PASAR DE LA MATRIZ AL ARRAY
 		animacion  = new Animation(2/0f,regionsMovimientos); //CREA LA ANIMCAION Y LA DURACION DE LOS FRAMES
 		tiempo = 0f; //INICIALIZA EL TIEMPO 
+		
+		
+	//	gameMap = new TiledGameMap();
 
 	} 
 	
+
 	@Override
 	public void show() {
 		texture = new Texture(Gdx.files.internal("fondoia.png"));
+
 	}
 
 	@Override
@@ -70,28 +79,30 @@ public class MainMenuScreen implements Screen {
 		frameActual = (TextureRegion) animacion.getKeyFrame(tiempo, true); //HACE UN LOOP
 		game.batch.draw(frameActual ,x ,y); //DIBUJA EL FRAME
 		
-		int x = SamuraiGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2 ; //ACTIVA Y DESACTIVA EL BOTON DE SALIDA
-		if (Gdx.input.getX() < x + EXIT_BUTTON_WIDTH && Gdx.input.getX() > x && SamuraiGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && Gdx.input.getY() > EXIT_BUTTON_Y  ) 
-		{
-			game.batch.draw(exitButtonActive, x, EXIT_BUTTON_Y ,EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-			if(Gdx.input.isTouched()) {
-				Gdx.app.exit();
-			}
-		} else { 
-			game.batch.draw(exitButtonInactive, x, EXIT_BUTTON_Y ,EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
-		}
-
-		x = SamuraiGame.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2 ; //ACTIVA Y DESACTIVA EL BOTON DE JUGAR
+		int x = SamuraiGame.WIDTH / 2 - PLAY_BUTTON_WIDTH / 2 ; //ACTIVA Y DESACTIVA EL BOTON DE JUGAR
 		if (Gdx.input.getX() < x + PLAY_BUTTON_WIDTH && Gdx.input.getX() > x && SamuraiGame.HEIGHT - Gdx.input.getY() < PLAY_BUTTON_Y + PLAY_BUTTON_HEIGHT && Gdx.input.getY() > PLAY_BUTTON_Y  ) 
 		{
 			game.batch.draw(playButtonActive, x, PLAY_BUTTON_Y ,PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 			if(Gdx.input.isTouched()) {
 				this.dispose();
-				game.setScreen(new MainGameScreen(game));
+				gameMap.setScreen(new MainGameScreen(game));
 			}
 		} else { 
 			game.batch.draw(playButtonInactive, x, PLAY_BUTTON_Y ,PLAY_BUTTON_WIDTH, PLAY_BUTTON_HEIGHT);
 		}
+		
+		
+		int  g = SamuraiGame.WIDTH / 2 - EXIT_BUTTON_WIDTH / 2 ; //ACTIVA Y DESACTIVA EL BOTON DE SALIDA
+		if (Gdx.input.getX() < g + EXIT_BUTTON_WIDTH && Gdx.input.getX() > g && SamuraiGame.HEIGHT - Gdx.input.getY() < EXIT_BUTTON_Y + EXIT_BUTTON_HEIGHT && Gdx.input.getY() > EXIT_BUTTON_Y  ) 
+		{
+			game.batch.draw(exitButtonActive, g, EXIT_BUTTON_Y ,EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+			if(Gdx.input.isTouched()) {
+				Gdx.app.exit();
+			}
+		} else { 
+			game.batch.draw(exitButtonInactive, g, EXIT_BUTTON_Y ,EXIT_BUTTON_WIDTH, EXIT_BUTTON_HEIGHT);
+		}
+
 
 		game.batch.end();
 		
