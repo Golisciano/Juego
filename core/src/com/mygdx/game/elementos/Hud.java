@@ -25,13 +25,13 @@ public class Hud implements Disposable{
 	private float contTiempo; 
 	private static Integer puntaje;
 	private float contVida;
-	private Integer vida; 
+	public static Integer vida; 
 	
 	private Label conttempLabel;
-	private Label contvidaLabel;
+	private static Label vidaLabel;
 	private static Label puntajeLabel;
 	private Label tiempoLabel;
-	private Label vidaLabel;
+	private Label vidLabel;
 	private Label puntLabel;
 	
 	
@@ -65,18 +65,18 @@ public class Hud implements Disposable{
 		
 
 		conttempLabel = new Label(String.format("%03d", timerMundo), nuevoEstilo);
-		contvidaLabel = new Label(String.format("%01d",vida),nuevoEstilo);
+		vidaLabel = new Label(String.format("%01d",vida),nuevoEstilo);
 		puntajeLabel = new Label(String.format("%06d",puntaje),nuevoEstilo);
 		
 		tiempoLabel =  new Label("TIEMPO",nuevoEstilo);
-		vidaLabel =  new Label("VIDA",nuevoEstilo);
+		vidLabel =  new Label("VIDA",nuevoEstilo);
 		puntLabel = new Label("PUNTAJE",nuevoEstilo);
 
-		tabla.add(vidaLabel).expandX().padTop(6);
+		tabla.add(vidLabel).expandX().padTop(6);
 		tabla.add(tiempoLabel).expandX().padTop(6);
 		tabla.add(puntLabel).expandX().padTop(6);
 		tabla.row();
-		tabla.add(contvidaLabel).expandX();
+		tabla.add(vidaLabel).expandX();
 		tabla.add(conttempLabel).expandX();
 		tabla.add(puntajeLabel).expandX();
 		
@@ -96,6 +96,11 @@ public class Hud implements Disposable{
 	public static void addPuntaje(int valor) {
 		puntaje += valor;
 		puntajeLabel.setText(String.format("%06d",puntaje));
+	}
+	
+	public static void restVida(int valor) {
+		vida -= valor;
+		vidaLabel.setText(String.format("%01d",vida));
 	}
 	
 	@Override

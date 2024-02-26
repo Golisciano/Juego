@@ -10,5 +10,5 @@ public class Recursos {
 	public static final String FONDONIVELDOS = "mapaniveldos/mapaniveldos.tmx";
 	
 	public static final String FUENTELETRAS = "fuentes/TokyoTaiyaki.otf";
-
+	public static final String FUENTELETS = "fuentes/MangaStyle.ttf";
 }

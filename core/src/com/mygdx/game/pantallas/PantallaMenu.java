@@ -49,7 +49,6 @@ public class PantallaMenu implements Screen {
 	public void render(float delta) {
 		
 		
-		
 		b.begin();
 			fondo.dibujar();
 			for (int i = 0; i < opciones.length; i++) {
@@ -103,8 +102,6 @@ public class PantallaMenu implements Screen {
 					Gdx.app.exit();;
 				}
 			}
-
-		
 
 	}
 

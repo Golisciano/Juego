@@ -29,19 +29,17 @@ import com.mygdx.game.utiles.Render;
 public class PantallaNivelUno implements Screen {
 	
 
-	private Juego game;
+	private PantallaControles game;
 	
 	SpriteBatch b;
 	
 	private TiledMap mapa;
-//	private TiledMapRenderer mapaRenderer;
 	private OrthogonalTiledMapRenderer renderer;
 	
 	private TextureAtlas atlas;
-	
 	private OrthographicCamera cam;
-	
 	private Viewport portJuego;
+	
 	
 	EntradasNivelUno entradas = new EntradasNivelUno(this);
 
@@ -61,10 +59,9 @@ public class PantallaNivelUno implements Screen {
 	protected Fixture fixture;
 
 	
-	public PantallaNivelUno(Juego game) {
-		atlas = new TextureAtlas("personajes/Personajes.pack");
-		
-		this.game = game;
+	public PantallaNivelUno(PantallaControles pantallaControles) {
+		atlas = new TextureAtlas("personajes/Persj.pack");
+		this.game = pantallaControles;
 		b = Render.batch;
 		
 		Gdx.input.setInputProcessor(entradas);
@@ -142,7 +139,7 @@ public class PantallaNivelUno implements Screen {
 		for (Enemigo enemigo : creador.getArquero()) {
 			enemigo.update(dt);
 		}
-//		arquero.update(dt);
+
 		hud.update(dt);
 		
 		
@@ -172,7 +169,7 @@ public class PantallaNivelUno implements Screen {
 		
 	
 		renderer.setView(cam);
-//		renderer.render();
+
 		
 		b2dr.render(mundo, cam.combined);
 		
@@ -194,7 +191,6 @@ public class PantallaNivelUno implements Screen {
 
 	@Override
 	public void resize(int width, int height) {
-//		cam.setToOrtho(false, width, height);
 		portJuego.update(width, height);
 	}
 
@@ -209,20 +205,17 @@ public class PantallaNivelUno implements Screen {
 	
 	@Override
 	public void pause() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void resume() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override

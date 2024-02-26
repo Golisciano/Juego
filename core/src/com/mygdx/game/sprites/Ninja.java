@@ -11,7 +11,10 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Juego;
+import com.mygdx.game.elementos.Hud;
+import com.mygdx.game.pantallas.PantallaFin;
 import com.mygdx.game.pantallas.PantallaNivelUno;
+import com.mygdx.game.utiles.Render;
 
 public class Ninja extends Sprite {
 	
@@ -20,10 +23,11 @@ public class Ninja extends Sprite {
 
 	 private Fixture swordFixture;
 	
-	public enum State {CALLENDO, CAMINANDO, SALTANDO, PARADO, ATACANDO};
+	public enum State {CALLENDO, CAMINANDO, SALTANDO, PARADO, ATACANDO, MUERTO};
 	public State estadoActual;
 	public State estadoAnterrior;
 	private TextureRegion ninjaParado;
+	private Animation<TextureRegion> ninjaMuerto;
 	private Animation<TextureRegion> ninjaCaminar;
 	private Animation<TextureRegion>  ninjaSalto;
 	private Animation<TextureRegion>  ninjaAtaque;
@@ -32,8 +36,11 @@ public class Ninja extends Sprite {
 	private float timerEstado;
 	
 	private boolean correrDerecha; 
+	private boolean ninjaEstaMuerto;
 	
 	public Ninja( PantallaNivelUno screen) {
+		
+		
 		super(screen.getAtlas().findRegion("ninja"));
 		this.mun = screen.getMundo();
 		estadoActual = State.PARADO;
@@ -43,24 +50,28 @@ public class Ninja extends Sprite {
 		
 		Array<TextureRegion> frames = new Array<TextureRegion>();
 		for(int i = 1; i < 5 ; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16 ,2 , 20, 40));
+			frames.add(new TextureRegion(getTexture(), i * 16 ,134 , 20, 40));
 		}
 		ninjaCaminar = new Animation<TextureRegion>(0.1f,frames);
 		frames.clear();
 		
-		for(int i = 11 ; i < 16; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16 ,2 , 20, 40));
+		for(int i = 12 ; i < 17; i++) {
+			frames.add(new TextureRegion(getTexture(), i * 16 ,134 , 20, 40));
 		}
-		ninjaSalto = new Animation<TextureRegion>(0.1f,frames);
+		ninjaSalto = new Animation<TextureRegion>(0.21f,frames);
 		
+		for(int i = 19 ; i < 23; i++) {
+			frames.add(new TextureRegion(getTexture(), i * 16 ,134 , 20, 40));
+		}
+		ninjaMuerto = new Animation<TextureRegion>(0.21f,frames);
 		
 		for(int i = 16 ; i < 19; i++) {
-			frames.add(new TextureRegion(getTexture(), i * 16 ,2 , 20, 40));
+			frames.add(new TextureRegion(getTexture(), i * 16 ,134 , 20, 40));
 		}
 		ninjaAtaque = new Animation<TextureRegion>(0.1f,frames);
 		
 		defineNinja();
-		ninjaParado  = new TextureRegion(getTexture(), 2, 2, 20, 40);
+		ninjaParado  = new TextureRegion(getTexture(), 2, 134, 20, 40);
 		
 		
 		setBounds(2, 2, 20 / Juego.PPM, 40 / Juego.PPM);
@@ -90,12 +101,17 @@ public class Ninja extends Sprite {
 			break;
 		case ATACANDO: 
 			region = ninjaAtaque.getKeyFrame(timerEstado);
+			break;
+		case MUERTO: 
+			region = ninjaMuerto.getKeyFrame(timerEstado);
+			break;
 		case CALLENDO: 
 			region = ninjaParado;
 			break;
 		case PARADO:
 			region = ninjaParado;
 			break;
+	
 		default:
 			region = ninjaParado;
 			break;
@@ -115,7 +131,9 @@ public class Ninja extends Sprite {
 	} 
 	
 	public State getState() {
-		if(b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && estadoAnterrior == State.SALTANDO)) {
+		if (ninjaEstaMuerto) {
+			return State.MUERTO;
+		} else if(b2body.getLinearVelocity().y > 0 || (b2body.getLinearVelocity().y < 0 && estadoAnterrior == State.SALTANDO)) {
 			return State.SALTANDO;
 		} else if(b2body.getLinearVelocity().y < 0) {
 			return State.CALLENDO;
@@ -123,8 +141,20 @@ public class Ninja extends Sprite {
 			return State.CAMINANDO;
 		} else {
 			return State.PARADO;
-		}
+		}	
+	}
+	
+	
+	public void golpe(Enemigo enemigo) {
 		
+		if(Hud.vida == 0) { 
+			Array<TextureRegion> frames = new Array<TextureRegion>();
+			ninjaEstaMuerto = true; 
+			for(int i = 19 ; i < 23; i++) {
+				frames.add(new TextureRegion(getTexture(), i * 16 ,134 , 20, 40));
+			}
+			ninjaMuerto = new Animation<TextureRegion>(0.21f,frames);
+		}
 	}
 	
 	public void defineNinja() {
@@ -137,8 +167,11 @@ public class Ninja extends Sprite {
 		FixtureDef fdef = new FixtureDef();
 		CircleShape shape = new CircleShape();
 		shape.setRadius(6 /Juego.PPM );
-		fdef.filter.categoryBits = Juego.NINJA_ESPADA_BIT;
-		fdef.filter.categoryBits = Juego.PISO_BIT | Juego.ENEMIGO_BIT | Juego.ENEMIGO_CUERPO_BIT;
+		fdef.filter.categoryBits = Juego.NINJA_BIT;
+		fdef.filter.maskBits = Juego.PISO_BIT | 
+				Juego.ENEMIGO_BIT |
+				Juego.OBJETO_BIT |
+				Juego.ENEMIGO_CUERPO_BIT;
 		
 		fdef.shape = shape;
 		b2body.createFixture(fdef);
@@ -146,7 +179,7 @@ public class Ninja extends Sprite {
 
 
 //   b2body.createFixture(swordFixtureDef);
-//
+////
 //	    swordShape.dispose();
 //	
 	

@@ -10,32 +10,51 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Juego;
+import com.mygdx.game.elementos.Hud;
 import com.mygdx.game.pantallas.PantallaNivelUno;
+import com.mygdx.game.sprites.Ninja.State;
 
 public class Arquero  extends Enemigo{
 
 	private float stateTime;
 	private Animation<TextureRegion> caminarAnimcaion;
+	private Animation<TextureRegion> morirAnimacion;
 	private Array <TextureRegion> frames;
+	private Array <TextureRegion> frame;
+	public State estadoActual;
+	public State estadoAnterrior;
 	private boolean setMuerto;
 	private boolean muerto;
 	
+	private float timerEstado;
+	
 	private int salud;
+	
+	public enum State {CAMINANDO, PARADO, ATACANDO};
+	private TextureRegion arqueroParado;
+	private Animation<TextureRegion> arqueroCaminar;
+	private Animation<TextureRegion>  arqueroAtaque;
+	
+	public boolean caminarDerecha;
 	
 	public Arquero(PantallaNivelUno screen, float x, float y) {
 		super(screen, x, y);
 		salud = 1;
+		estadoActual = State.PARADO;
+		estadoAnterrior = State.PARADO;
+	
+		
 		frames = new Array <TextureRegion>();
-		for(int i = 2 ; i < 5 ; i++) {
-			frames.add(new TextureRegion(screen.getAtlas().findRegion("arquero"), i * 16, 2, 20, 40));
 		
+		for(int i = 0 ; i < 3 ; i++) {
+			frames.add(new TextureRegion(screen.getAtlas().findRegion("arqu"), i * 16, 2, 32, 55));
 		}
-		
 		caminarAnimcaion = new Animation<TextureRegion>(0.5f, frames);
 		stateTime = 0;
 		setBounds(getX(), getY(), 32 / Juego.PPM, 60/ Juego.PPM);
 		setMuerto = false;
 		muerto = false;
+
 		
 	}
 
@@ -43,10 +62,14 @@ public class Arquero  extends Enemigo{
 		stateTime += dt;
 		if(setMuerto && !muerto) {
 			mundo.destroyBody(b2body);
-			muerto = true; 
-					setRegion(new TextureRegion(screen.getAtlas().findRegion("arquero"), 30, 2, 20, 40 ));
-					stateTime = 0;
-			
+			muerto = true; 	
+			for(int i = 4 ; i < 8 ; i++ ) {
+				setRegion(new TextureRegion(screen.getAtlas().findRegion("arqu"), i * 16, 2, 46, 40 ));
+			}
+			morirAnimacion = new Animation<TextureRegion>(0.5f, frames);	
+			stateTime = 0;
+			Hud.addPuntaje(200);
+
 		} else if(!muerto) {
 			b2body.setLinearVelocity(velocidad);
 			setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2.5f);
@@ -55,13 +78,6 @@ public class Arquero  extends Enemigo{
 
 	}
 
-
-//	   public void receiveDamage(int damage) {
-//	        salud -= damage;
-//	        if (salud <= 0) {
-//	        	System.out.println("muerto");
-//	        }
-//	   }
 	        @Override
 	protected void defineEnemigo() {
 		BodyDef bdef = new BodyDef();
@@ -93,7 +109,7 @@ public class Arquero  extends Enemigo{
 		cuerpo.set(vertice);
 		
 		fdef.shape = cuerpo;
-		 fdef.restitution = 0.5f;
+		fdef.restitution = 0.5f;
 		fdef.filter.categoryBits = Juego.ENEMIGO_CUERPO_BIT;
 		b2body.createFixture(fdef).setUserData(this);
 	}

@@ -16,10 +16,7 @@ import com.mygdx.game.sprites.Arquero;
 
 public class B2CreadorMundo {
 	
-
 	private Array<Arquero> arquero;
-
-
 
 
 	public B2CreadorMundo(PantallaNivelUno screen) {

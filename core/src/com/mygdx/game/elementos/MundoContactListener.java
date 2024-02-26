@@ -6,8 +6,10 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.mygdx.game.Juego;
+import com.mygdx.game.pantallas.PantallaFin;
 import com.mygdx.game.sprites.Enemigo;
 import com.mygdx.game.sprites.Ninja;
+import com.mygdx.game.utiles.Render;
 
 
 public class MundoContactListener implements ContactListener{
@@ -29,6 +31,15 @@ public class MundoContactListener implements ContactListener{
 				}
 				break;
 
+			case Juego.ENEMIGO_BIT | Juego.NINJA_ESPADA_BIT :
+				if(fixA.getFilterData().categoryBits == Juego.ENEMIGO_CUERPO_BIT) {
+					((Enemigo)fixA.getUserData()).hitEnCuerpo((Ninja) fixB.getUserData());
+				}else {
+					((Enemigo)fixB.getUserData()).hitEnCuerpo((Ninja) fixA.getUserData());
+				}
+				break;
+
+				
 			case Juego.ENEMIGO_BIT | Juego.OBJETO_BIT :
 				if(fixA.getFilterData().categoryBits == Juego.ENEMIGO_BIT) {
 					((Enemigo)fixA.getUserData()).reverseVelocidad(true, false);
@@ -36,17 +47,37 @@ public class MundoContactListener implements ContactListener{
 					((Enemigo)fixB.getUserData()).reverseVelocidad(true, false);
 				}
 				break;
+				
 			
 			case Juego.ENEMIGO_BIT | Juego.ENEMIGO_BIT :
 				((Enemigo)fixA.getUserData()).reverseVelocidad(true, false);
 				((Enemigo)fixB.getUserData()).reverseVelocidad(true, false);
 				break;
+				
+			case Juego.NINJA_BIT | Juego.ENEMIGO_BIT :
+				Hud.restVida(2);
+
+				if(Hud.vida == 0) {
+					Render.app.setScreen(new PantallaFin());
+				}
+				
+				break;
+				
+			case Juego.NADA_BIT | Juego.NINJA_BIT:
+				Hud.restVida(2);
+
+				if(Hud.vida == 0) {
+					Render.app.setScreen(new PantallaFin());
+				}
+			break;
 		}
 	} 
 
+
+
 	@Override
 	public void endContact(Contact contact) {
-//		Gdx.app.log("Final", "");
+
 		
 	}
 

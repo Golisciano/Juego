@@ -2,18 +2,18 @@ package com.mygdx.game.io;
 
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.mygdx.game.pantallas.PantallaMenu;
+import com.mygdx.game.pantallas.PantallaFin;
 
-public class EntradasMenu implements InputProcessor{
+public class EntradasFin implements InputProcessor{
 
 	private boolean abajo = false, arriba = false; 
 	public boolean enter = false; 
+	
+	
+	PantallaFin app;
 
 	
-	PantallaMenu app;
-
-	
-	public EntradasMenu(PantallaMenu app) {
+	public EntradasFin(PantallaFin app) {
 		this.app = app;
 	}
 
@@ -33,7 +33,6 @@ public class EntradasMenu implements InputProcessor{
 	@Override
 	public boolean keyDown(int keycode) {
 		
-		app.tiempo = 0.08f;
 		
 		if(keycode == Keys.W) {
 			arriba = true;
@@ -54,7 +53,6 @@ public class EntradasMenu implements InputProcessor{
 		}	
 		
 		
-		
 		return false;
 	}
 
@@ -68,6 +66,7 @@ public class EntradasMenu implements InputProcessor{
 		}
 		
 		
+		
 		if(keycode == Keys.UP) {
 			arriba = false;
 		} else if(keycode == Keys.DOWN) {
@@ -77,7 +76,6 @@ public class EntradasMenu implements InputProcessor{
 		if(keycode == Keys.ENTER) {
 			enter = false;
 		}	
-		
 		
 		
 		return false;
