@@ -20,7 +20,9 @@ import com.mygdx.game.Juego;
 import com.mygdx.game.elementos.B2CreadorMundo;
 import com.mygdx.game.elementos.Hud;
 import com.mygdx.game.elementos.MundoContactListener;
-import com.mygdx.game.io.EntradasNivelUno;
+import com.mygdx.game.io.EntradasPjDos;
+import com.mygdx.game.io.EntradasPjUno;
+import com.mygdx.game.red.HiloCliente;
 import com.mygdx.game.sprites.Enemigo;
 import com.mygdx.game.sprites.Ninja;
 import com.mygdx.game.utiles.Recursos;
@@ -29,7 +31,7 @@ import com.mygdx.game.utiles.Render;
 public class PantallaNivelUno implements Screen {
 	
 
-	private PantallaControles game;
+	private Juego game;
 	
 	SpriteBatch b;
 	
@@ -41,7 +43,8 @@ public class PantallaNivelUno implements Screen {
 	private Viewport portJuego;
 	
 	
-	EntradasNivelUno entradas = new EntradasNivelUno(this);
+	EntradasPjUno entradasUno = new EntradasPjUno();
+
 
 	public float tiempo = 0; 
 
@@ -53,18 +56,24 @@ public class PantallaNivelUno implements Screen {
 	private B2CreadorMundo creador;
 	
 
-	private Ninja player;
+	private Ninja player1;
+	private int nroPlayer = 0;
+	private Ninja player2;
 	
 
 	protected Fixture fixture;
 
+	private HiloCliente hc;
 	
-	public PantallaNivelUno(PantallaControles pantallaControles) {
+	public PantallaNivelUno(Juego game) {
 		atlas = new TextureAtlas("personajes/Persj.pack");
-		this.game = pantallaControles;
+		hc = new HiloCliente();
+		hc.start();
+		this.game = game;
 		b = Render.batch;
 		
-		Gdx.input.setInputProcessor(entradas);
+		Gdx.input.setInputProcessor(entradasUno);
+
 		
 		
 		cam = new OrthographicCamera();
@@ -87,7 +96,8 @@ public class PantallaNivelUno implements Screen {
 
 		creador = new B2CreadorMundo(this);
 		
-		player = new Ninja(this);
+		player1 = new Ninja();
+		player2 = new Ninja();
 		
 		mundo.setContactListener(new MundoContactListener());
 
@@ -100,27 +110,70 @@ public class PantallaNivelUno implements Screen {
 
 	public void handleInput(float dt) {
 		
-		if((entradas.isArriba())&&(player.b2body.getLinearVelocity().y <= 2)) {
-			player.b2body.applyLinearImpulse(new Vector2(0 , 2f ), player.b2body.getWorldCenter(), true);
-		}
-
-		if((entradas.isDerecha())&&(player.b2body.getLinearVelocity().x <= 4)){
-			player.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player.b2body.getWorldCenter(), true);
-		}
-		if((entradas.isIzquierda())&&(player.b2body.getLinearVelocity().x >= -7)){
-			player.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player.b2body.getWorldCenter(), true);
+		if(entradasUno.isArriba()) {
+			hc.enviaerMensaje("ApreteArriba");
+		} else {
+			
 		}
 		
-		if(entradas.isAtaque()) {
-			   PolygonShape swordShape = new PolygonShape();
-			    swordShape.setAsBox(15/ Juego.PPM, 0);
-
-			    FixtureDef swordFixtureDef = new FixtureDef();
-			    swordFixtureDef.shape = swordShape;
-			    swordFixtureDef.isSensor = false;
-
-			 player.b2body.createFixture(swordFixtureDef).setUserData("espada");
+		if(entradasUno.isAbajo()) {
+			hc.enviaerMensaje("ApreteAbajo");
 		}
+		
+		if(entradasUno.isDerecha()) {
+			hc.enviaerMensaje("ApreteDerecha");
+		}
+		
+		if(entradasUno.isIzquierda()) {
+			hc.enviaerMensaje("ApreteIzquierda");
+		}
+//		if(nroPlayer==0) {
+//			if((entradasUno.isArriba())&&(player1.b2body.getLinearVelocity().y <= 2)) {
+//				player1.b2body.applyLinearImpulse(new Vector2(0 , 2f ), player1.b2body.getWorldCenter(), true);
+//			}
+//
+//			if((entradasUno.isDerecha())&&(player1.b2body.getLinearVelocity().x <= 4)){
+//				player1.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player1.b2body.getWorldCenter(), true);
+//			}
+//			if((entradasUno.isIzquierda())&&(player1.b2body.getLinearVelocity().x >= -7)){
+//				player1.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player1.b2body.getWorldCenter(), true);
+//			}
+//			
+//			if(entradasUno.isAtaque()) {
+//				   PolygonShape swordShape = new PolygonShape();
+//				    swordShape.setAsBox(15/ Juego.PPM, 0);
+//
+//				    FixtureDef swordFixtureDef = new FixtureDef();
+//				    swordFixtureDef.shape = swordShape;
+//				    swordFixtureDef.isSensor = false;
+//
+//				    player1.b2body.createFixture(swordFixtureDef).setUserData("espada");
+//			}
+//		} else if(nroPlayer == 1)  {
+//			
+//			if((entradasUno.isArriba())&&(player2.b2body.getLinearVelocity().y <= 2)) {
+//				player2.b2body.applyLinearImpulse(new Vector2(0 , 2f ), player2.b2body.getWorldCenter(), true);
+//			}
+//
+//			if((entradasUno.isDerecha())&&(player1.b2body.getLinearVelocity().x <= 4)){
+//				player2.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player2.b2body.getWorldCenter(), true);
+//			}
+//			if((entradasUno.isIzquierda())&&(player1.b2body.getLinearVelocity().x >= -7)){
+//				player2.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player2.b2body.getWorldCenter(), true);
+//			}
+//			
+//			if(entradasUno.isAtaque()) {
+//				   PolygonShape swordShape = new PolygonShape();
+//				    swordShape.setAsBox(15/ Juego.PPM, 0);
+//
+//				    FixtureDef swordFixtureDef = new FixtureDef();
+//				    swordFixtureDef.shape = swordShape;
+//				    swordFixtureDef.isSensor = false;
+//
+//				    player2.b2body.createFixture(swordFixtureDef).setUserData("espada");
+//			}
+//		}
+		
 	}
 	
 	
@@ -134,16 +187,20 @@ public class PantallaNivelUno implements Screen {
 		handleInput(dt);
 		
 		mundo.step(1/60f, 6 ,4);
+//		
+//		player1.update(dt);
+//		player2.update(dt);
 		
-		player.update(dt);
 		for (Enemigo enemigo : creador.getArquero()) {
 			enemigo.update(dt);
 		}
 
+		
 		hud.update(dt);
 		
 		
-		cam.position.x = player.b2body.getPosition().x;
+		cam.position.x = player1.b2body.getPosition().x;
+		cam.position.x = player2.b2body.getPosition().x;
 		
 		cam.update();
 		
@@ -176,10 +233,11 @@ public class PantallaNivelUno implements Screen {
 		
 		b.setProjectionMatrix(cam.combined);
 		b.begin();
-		player.draw(b);
+		player1.draw(b);
+		player2.draw(b);
 		for (Enemigo enemigo : creador.getArquero()) {
 			enemigo.draw(b);
-			if(enemigo.getX() < player.getX() + 224 / Juego.PPM) {
+			if(enemigo.getX() < player1.getX() + 224 / Juego.PPM) {
 				enemigo.b2body.setActive(true);
 			}
 		}

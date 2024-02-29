@@ -3,6 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.pantallas.PantallaMenu;
+import com.mygdx.game.pantallas.PantallaNivelUno;
+import com.mygdx.game.red.HiloCliente;
 import com.mygdx.game.utiles.Render;
 
 public class Juego extends Game {
@@ -20,15 +22,23 @@ public class Juego extends Game {
 	public static final short ENEMIGO_CUERPO_BIT = 16;
 	public static final short OBJETO_BIT = 32;
 	
+	public static boolean empieza = false;
+	
+	private HiloCliente hc;
+	
 	@Override
 	public void create () {
 
-		Render.app = this;
-		Render.batch = new SpriteBatch();
-		this.setScreen(new PantallaMenu());
-
+		hc = new HiloCliente();
+		hc.start();
+		
+		if(!empieza) {
+			System.out.println("Esperando");
+		} else {
+			Render.batch = new SpriteBatch();
+			this.setScreen(new PantallaNivelUno(this));
+		}
 	}
-
 		
 	private void update() {
 

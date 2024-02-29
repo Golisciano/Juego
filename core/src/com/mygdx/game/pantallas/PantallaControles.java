@@ -78,7 +78,7 @@ public class PantallaControles  implements Screen {
 		if(termina) {
 			contTiempoTermina+=0.1f;
 			if(contTiempoTermina>tiempoTermina) {
-				Render.app.setScreen(new PantallaNivelUno(this));
+//				Render.app.setScreen(new PantallaNivelUno(this));
 			}
 		}
 		

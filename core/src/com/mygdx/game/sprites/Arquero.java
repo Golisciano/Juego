@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.Juego;
 import com.mygdx.game.elementos.Hud;
 import com.mygdx.game.pantallas.PantallaNivelUno;
-import com.mygdx.game.sprites.Ninja.State;
+
 
 public class Arquero  extends Enemigo{
 
@@ -126,3 +126,40 @@ public class Arquero  extends Enemigo{
 	}
 
 }
+//package com.mygdx.game.sprites;
+//
+//public class Arquero extends Enemigo {
+//
+//    private boolean setMuerto;
+//    private boolean muerto;
+//
+//    private int salud;
+//
+//    public Arquero(float x, float y) {
+//        super(x, y);
+//        salud = 1;
+//        setMuerto = false;
+//        muerto = false;
+//    }
+//
+//    public void update(float dt) {
+//        if (setMuerto && !muerto) {
+//        	mundo.destroyBody(b2body);
+//        	
+//            muerto = true;
+//        } else if (!muerto) {
+//            // Acciones cuando está vivo
+//            // Por ejemplo, animaciones o lógica de movimiento
+//        }
+//    }
+//
+//    @Override
+//    protected void defineEnemigo() {
+//        // No es necesario definir el enemigo en el cliente
+//    }
+//
+//    @Override
+//    public void hitEnCuerpo(Ninja ninja) {
+//        setMuerto = true;
+//    }
+//}

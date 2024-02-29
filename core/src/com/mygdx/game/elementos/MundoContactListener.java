@@ -63,11 +63,11 @@ public class MundoContactListener implements ContactListener{
 				
 				break;
 				
-			case Juego.NADA_BIT | Juego.NINJA_BIT:
-				Hud.restVida(2);
-
-				if(Hud.vida == 0) {
-					Render.app.setScreen(new PantallaFin());
+			case Juego.NINJA_BIT | Juego.NINJA_BIT:
+				if(fixA.getFilterData().categoryBits == Juego.NINJA_BIT) {
+					((Enemigo)fixA.getUserData()).reverseVelocidad(true, false);
+				}else {
+					((Enemigo)fixB.getUserData()).reverseVelocidad(true, false);
 				}
 			break;
 		}
