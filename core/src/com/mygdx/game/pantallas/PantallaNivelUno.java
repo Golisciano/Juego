@@ -23,270 +23,235 @@ import com.mygdx.game.elementos.MundoContactListener;
 import com.mygdx.game.io.EntradasPjDos;
 import com.mygdx.game.io.EntradasPjUno;
 import com.mygdx.game.red.HiloCliente;
+import com.mygdx.game.sprites.Arquero;
 import com.mygdx.game.sprites.Enemigo;
-import com.mygdx.game.sprites.Ninja;
+import com.mygdx.game.sprites.Ninja2;
 import com.mygdx.game.utiles.Recursos;
 import com.mygdx.game.utiles.Render;
 
 public class PantallaNivelUno implements Screen {
-	
-
-	private Juego game;
-	
-	SpriteBatch b;
-	
-	private TiledMap mapa;
-	private OrthogonalTiledMapRenderer renderer;
-	
-	private TextureAtlas atlas;
-	private OrthographicCamera cam;
-	private Viewport portJuego;
-	
-	
-	EntradasPjUno entradasUno = new EntradasPjUno();
 
 
-	public float tiempo = 0; 
+    private Juego game;
 
-	private Hud hud;
-	
-	
-	private World mundo;
-	private Box2DDebugRenderer b2dr;
-	private B2CreadorMundo creador;
-	
+    SpriteBatch b;
 
-	private Ninja player1;
-	private int nroPlayer = 0;
-	private Ninja player2;
-	
+    private TiledMap mapa;
+    private OrthogonalTiledMapRenderer renderer;
 
-	protected Fixture fixture;
-
-	private HiloCliente hc;
-	
-	public PantallaNivelUno(Juego game) {
-		atlas = new TextureAtlas("personajes/Persj.pack");
-		hc = new HiloCliente();
-		hc.start();
-		this.game = game;
-		b = Render.batch;
-		
-		Gdx.input.setInputProcessor(entradasUno);
-
-		
-		
-		cam = new OrthographicCamera();
-		
-		portJuego = new FitViewport(Juego.V_WITDH / Juego.PPM, Juego.V_HEIGHT/ Juego.PPM, cam);
-		
-		hud = new Hud(b);
-		
-		mapa = new TmxMapLoader().load(Recursos.FONDONIVELDOS);
-		renderer = new OrthogonalTiledMapRenderer(mapa, 1 / Juego.PPM);
-		
-		
-		cam.position.set(portJuego.getWorldWidth() / 2 , portJuego.getWorldHeight() / 2, 0);
-		
-		
-		mundo = new World(new Vector2(0, -10), true);
-		
-		b2dr = new Box2DDebugRenderer();
-		
-
-		creador = new B2CreadorMundo(this);
-		
-		player1 = new Ninja();
-		player2 = new Ninja();
-		
-		mundo.setContactListener(new MundoContactListener());
-
-	}
-	
-	@Override
-	public void show() {
-		
-	}
-
-	public void handleInput(float dt) {
-		
-		if(entradasUno.isArriba()) {
-			hc.enviaerMensaje("ApreteArriba");
-		} else {
-			
-		}
-		
-		if(entradasUno.isAbajo()) {
-			hc.enviaerMensaje("ApreteAbajo");
-		}
-		
-		if(entradasUno.isDerecha()) {
-			hc.enviaerMensaje("ApreteDerecha");
-		}
-		
-		if(entradasUno.isIzquierda()) {
-			hc.enviaerMensaje("ApreteIzquierda");
-		}
-//		if(nroPlayer==0) {
-//			if((entradasUno.isArriba())&&(player1.b2body.getLinearVelocity().y <= 2)) {
-//				player1.b2body.applyLinearImpulse(new Vector2(0 , 2f ), player1.b2body.getWorldCenter(), true);
-//			}
-//
-//			if((entradasUno.isDerecha())&&(player1.b2body.getLinearVelocity().x <= 4)){
-//				player1.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player1.b2body.getWorldCenter(), true);
-//			}
-//			if((entradasUno.isIzquierda())&&(player1.b2body.getLinearVelocity().x >= -7)){
-//				player1.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player1.b2body.getWorldCenter(), true);
-//			}
-//			
-//			if(entradasUno.isAtaque()) {
-//				   PolygonShape swordShape = new PolygonShape();
-//				    swordShape.setAsBox(15/ Juego.PPM, 0);
-//
-//				    FixtureDef swordFixtureDef = new FixtureDef();
-//				    swordFixtureDef.shape = swordShape;
-//				    swordFixtureDef.isSensor = false;
-//
-//				    player1.b2body.createFixture(swordFixtureDef).setUserData("espada");
-//			}
-//		} else if(nroPlayer == 1)  {
-//			
-//			if((entradasUno.isArriba())&&(player2.b2body.getLinearVelocity().y <= 2)) {
-//				player2.b2body.applyLinearImpulse(new Vector2(0 , 2f ), player2.b2body.getWorldCenter(), true);
-//			}
-//
-//			if((entradasUno.isDerecha())&&(player1.b2body.getLinearVelocity().x <= 4)){
-//				player2.b2body.applyLinearImpulse(new Vector2(0.1f, 0), player2.b2body.getWorldCenter(), true);
-//			}
-//			if((entradasUno.isIzquierda())&&(player1.b2body.getLinearVelocity().x >= -7)){
-//				player2.b2body.applyLinearImpulse(new Vector2(-0.1f, 0), player2.b2body.getWorldCenter(), true);
-//			}
-//			
-//			if(entradasUno.isAtaque()) {
-//				   PolygonShape swordShape = new PolygonShape();
-//				    swordShape.setAsBox(15/ Juego.PPM, 0);
-//
-//				    FixtureDef swordFixtureDef = new FixtureDef();
-//				    swordFixtureDef.shape = swordShape;
-//				    swordFixtureDef.isSensor = false;
-//
-//				    player2.b2body.createFixture(swordFixtureDef).setUserData("espada");
-//			}
-//		}
-		
-	}
-	
-	
-	
-	public TextureAtlas getAtlas() {
-		return atlas;
-	}
-
-	public void update(float dt) {
-		
-		handleInput(dt);
-		
-		mundo.step(1/60f, 6 ,4);
-//		
-//		player1.update(dt);
-//		player2.update(dt);
-		
-		for (Enemigo enemigo : creador.getArquero()) {
-			enemigo.update(dt);
-		}
-
-		
-		hud.update(dt);
-		
-		
-		cam.position.x = player1.b2body.getPosition().x;
-		cam.position.x = player2.b2body.getPosition().x;
-		
-		cam.update();
-		
-		renderer.setView(cam);
-
-	
-	}
-	
-	@Override
-	public void render(float delta) {
-		
-
-		update(delta);
-		
-		Render.limpiarPantalla(0, 0, 0);
-		
-		renderer.render();
-		
-		b.setProjectionMatrix(hud.escena.getCamera().combined);
-		hud.escena.draw();
-		cam.update();
-		b.setProjectionMatrix(cam.combined);
-		
-	
-		renderer.setView(cam);
-
-		
-		b2dr.render(mundo, cam.combined);
-		
-		
-		b.setProjectionMatrix(cam.combined);
-		b.begin();
-		player1.draw(b);
-		player2.draw(b);
-		for (Enemigo enemigo : creador.getArquero()) {
-			enemigo.draw(b);
-			if(enemigo.getX() < player1.getX() + 224 / Juego.PPM) {
-				enemigo.b2body.setActive(true);
-			}
-		}
-//		arquero.draw(b);
-		b.end();
-		
-
-	}
-
-	@Override
-	public void resize(int width, int height) {
-		portJuego.update(width, height);
-	}
+    private TextureAtlas atlas;
+    private OrthographicCamera cam;
+    private Viewport portJuego;
 
 
-	public TiledMap getMapa() {
-		return mapa;
-	}
-	
-	public World getMundo() {
-		return mundo;
-	}
-	
-	@Override
-	public void pause() {
+    EntradasPjUno entradasUno = new EntradasPjUno(this);
 
-	}
 
-	@Override
-	public void resume() {
+    public float tiempo = 0;
 
-	}
+    private Hud hud;
 
-	@Override
-	public void hide() {
 
-	}
+    private World mundo;
+    private Box2DDebugRenderer b2dr;
+    public static B2CreadorMundo creador;
 
-	@Override
-	public void dispose() {
-		mapa.dispose();
-		renderer.dispose();
-		mundo.dispose();
-		b2dr.dispose();
-		hud.dispose();
-	}
 
-    public Hud getHud(){ 
-    		return hud; 
-    	}
+    public static Ninja2 player1;
+
+    public static Ninja2 player2;
+
+
+    protected Fixture fixture;
+
+
+    public static Vector2 player1Position;
+    public static Vector2 player2Position;
+
+
+    public PantallaNivelUno(Juego game) {
+        atlas = new TextureAtlas("personajes/Persj.pack");
+        this.game = game;
+        b = Render.batch;
+
+        Gdx.input.setInputProcessor(entradasUno);
+
+
+        cam = new OrthographicCamera();
+
+        portJuego = new FitViewport(Juego.V_WITDH / Juego.PPM, Juego.V_HEIGHT / Juego.PPM, cam);
+
+        hud = new Hud(b);
+
+        mapa = new TmxMapLoader().load(Recursos.FONDONIVELDOS);
+        renderer = new OrthogonalTiledMapRenderer(mapa, 1 / Juego.PPM);
+
+
+        cam.position.set(portJuego.getWorldWidth() / 2, portJuego.getWorldHeight() / 2, 0);
+
+
+        mundo = new World(new Vector2(0, -10), true);
+
+
+        creador = new B2CreadorMundo(this);
+        player1 = new Ninja2(0, this);
+        player2 = new Ninja2(0, this);
+
+
+        player1Position = player1.b2body.getPosition();
+        player2Position = player2.b2body.getPosition();
+        mundo.setContactListener(new MundoContactListener());
+
+    }
+
+    @Override
+    public void show() {
+
+    }
+
+    public void handleInput(float dt) {
+        if (entradasUno.isArriba() || entradasUno.isAbajo() || entradasUno.isIzquierda() || entradasUno.isDerecha()) {
+            Juego.hc.enviaerMensaje("mover#" + entradasUno.isArriba() + "#" + entradasUno.isAbajo() + "#" + entradasUno.isIzquierda() + "#" + entradasUno.isDerecha());
+        }
+
+    }
+
+
+    public TextureAtlas getAtlas() {
+        return atlas;
+    }
+
+    public void update(float dt) {
+        if ((HiloCliente.idCliente == 0 && !player1.ninjaEstaMuerto) ||
+            (HiloCliente.idCliente == 1 && !player2.ninjaEstaMuerto)) {
+            handleInput(dt);
+        }
+
+        actualizarDelServidor();
+
+        mundo.step(1 / 60f, 6, 4);
+
+        actualizarDelServidor();
+		
+        player1.update(dt);
+        player2.update(dt);
+        for (Arquero enemigo : creador.getArquero()) {
+            enemigo.update(dt);
+        }
+
+        hud.update(dt);
+
+
+        if (HiloCliente.idCliente == 0) {
+            cam.position.x = player1.ninjaEstaMuerto ? player2.b2body.getPosition().x : player1.b2body.getPosition().x;
+        } else {
+            cam.position.x = player2.ninjaEstaMuerto ? player1.b2body.getPosition().x : player2.b2body.getPosition().x;
+        }
+
+
+
+        cam.update();
+
+        renderer.setView(cam);
+
+
+    }
+
+    @Override
+    public void render(float delta) {
+
+
+        update(delta);
+
+        Render.limpiarPantalla(0, 0, 0);
+
+        renderer.render();
+
+        b.setProjectionMatrix(hud.escena.getCamera().combined);
+        hud.escena.draw();
+        cam.update();
+        b.setProjectionMatrix(cam.combined);
+
+
+        renderer.setView(cam);
+
+
+        b.setProjectionMatrix(cam.combined);
+        b.begin();
+        if(!player1.ninjaEstaMuerto) player1.draw(b);
+        if(!player2.ninjaEstaMuerto) player2.draw(b);
+        for (Arquero enemigo : creador.getArquero()) {
+            enemigo.draw(b);
+
+        }
+
+        b.end();
+
+
+    }
+
+
+    public void actualizarDelServidor() {
+        if (!player1.b2body.getPosition().equals(player1Position)) {
+            if (player1.b2body.getPosition().x < player1Position.x) {
+            }
+            player1.b2body.setTransform(player1Position, player1.b2body.getAngle());
+        }
+        if (!player2.b2body.getPosition().equals(player2Position)) {
+            player2.b2body.setTransform(player2Position, player2.b2body.getAngle());
+        }
+
+
+        for (Arquero enemigo : creador.getArquero()) {
+            if (enemigo.b2body.getPosition().x != enemigo.proximoX || enemigo.b2body.getPosition().y != enemigo.proximoY) {
+
+                enemigo.b2body.setTransform(enemigo.proximoX, enemigo.proximoY, enemigo.b2body.getAngle());
+            }
+
+        }
+
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        portJuego.update(width, height);
+    }
+
+
+    public TiledMap getMapa() {
+        return mapa;
+    }
+
+    public World getMundo() {
+        return mundo;
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
+    }
+
+    @Override
+    public void dispose() {
+        mapa.dispose();
+        renderer.dispose();
+        mundo.dispose();
+        b2dr.dispose();
+        hud.dispose();
+    }
+
+    public Hud getHud() {
+        return hud;
+    }
 }
 

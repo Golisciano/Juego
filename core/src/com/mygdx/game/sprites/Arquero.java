@@ -24,7 +24,7 @@ public class Arquero  extends Enemigo{
 	public State estadoActual;
 	public State estadoAnterrior;
 	private boolean setMuerto;
-	private boolean muerto;
+	public boolean muerto;
 	
 	private float timerEstado;
 	
@@ -36,19 +36,23 @@ public class Arquero  extends Enemigo{
 	private Animation<TextureRegion>  arqueroAtaque;
 	
 	public boolean caminarDerecha;
+
+	public float proximoX,proximoY;
 	
 	public Arquero(PantallaNivelUno screen, float x, float y) {
 		super(screen, x, y);
 		salud = 1;
 		estadoActual = State.PARADO;
 		estadoAnterrior = State.PARADO;
-	
+		proximoX=x;
+		proximoY=y;
 		
 		frames = new Array <TextureRegion>();
 		
 		for(int i = 0 ; i < 3 ; i++) {
 			frames.add(new TextureRegion(screen.getAtlas().findRegion("arqu"), i * 16, 2, 32, 55));
 		}
+		
 		caminarAnimcaion = new Animation<TextureRegion>(0.5f, frames);
 		stateTime = 0;
 		setBounds(getX(), getY(), 32 / Juego.PPM, 60/ Juego.PPM);
@@ -68,10 +72,10 @@ public class Arquero  extends Enemigo{
 			}
 			morirAnimacion = new Animation<TextureRegion>(0.5f, frames);	
 			stateTime = 0;
-			Hud.addPuntaje(200);
+
 
 		} else if(!muerto) {
-			b2body.setLinearVelocity(velocidad);
+
 			setPosition(b2body.getPosition().x - getWidth() / 2, b2body.getPosition().y - getHeight() / 2.5f);
 			setRegion(caminarAnimcaion.getKeyFrame(stateTime , true));
 		}
@@ -115,6 +119,7 @@ public class Arquero  extends Enemigo{
 	}
 	        
 	public void draw(Batch batch) {
+		if(getTexture() == null) return;
 		if(!muerto || stateTime < 1 ) {
 			super.draw(batch);
 		}
@@ -126,40 +131,3 @@ public class Arquero  extends Enemigo{
 	}
 
 }
-//package com.mygdx.game.sprites;
-//
-//public class Arquero extends Enemigo {
-//
-//    private boolean setMuerto;
-//    private boolean muerto;
-//
-//    private int salud;
-//
-//    public Arquero(float x, float y) {
-//        super(x, y);
-//        salud = 1;
-//        setMuerto = false;
-//        muerto = false;
-//    }
-//
-//    public void update(float dt) {
-//        if (setMuerto && !muerto) {
-//        	mundo.destroyBody(b2body);
-//        	
-//            muerto = true;
-//        } else if (!muerto) {
-//            // Acciones cuando está vivo
-//            // Por ejemplo, animaciones o lógica de movimiento
-//        }
-//    }
-//
-//    @Override
-//    protected void defineEnemigo() {
-//        // No es necesario definir el enemigo en el cliente
-//    }
-//
-//    @Override
-//    public void hitEnCuerpo(Ninja ninja) {
-//        setMuerto = true;
-//    }
-//}

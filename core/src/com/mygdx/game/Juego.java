@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.mygdx.game.pantallas.PantallaFin;
 import com.mygdx.game.pantallas.PantallaMenu;
 import com.mygdx.game.pantallas.PantallaNivelUno;
 import com.mygdx.game.red.HiloCliente;
@@ -23,21 +24,16 @@ public class Juego extends Game {
 	public static final short OBJETO_BIT = 32;
 	
 	public static boolean empieza = false;
+
+	public static boolean started = false;
 	
-	private HiloCliente hc;
+	public static HiloCliente hc;
 	
 	@Override
 	public void create () {
-
+		Render.batch = new SpriteBatch();
 		hc = new HiloCliente();
 		hc.start();
-		
-		if(!empieza) {
-			System.out.println("Esperando");
-		} else {
-			Render.batch = new SpriteBatch();
-			this.setScreen(new PantallaNivelUno(this));
-		}
 	}
 		
 	private void update() {
@@ -56,7 +52,18 @@ public class Juego extends Game {
 	@Override
 	public void render () {
 		super.render();
-		
+
+		if(hc.fin){
+			empieza = false;
+			this.setScreen(new PantallaFin());
+		}
+		if(!empieza) {
+
+		} else if(!(this.getScreen() instanceof PantallaNivelUno)){
+
+			System.out.println("Esperando2");
+			this.setScreen(new PantallaNivelUno(this));
+		}
 	}
 	
 }

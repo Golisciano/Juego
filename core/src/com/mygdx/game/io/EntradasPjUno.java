@@ -26,7 +26,8 @@ public class EntradasPjUno implements InputProcessor{
 	private HiloCliente hc;
 	
 
-	public EntradasPjUno() {
+	public EntradasPjUno(PantallaNivelUno nivel1) {
+		app = nivel1;
 		this.hc = hc;
 		
 	}
@@ -61,16 +62,26 @@ public class EntradasPjUno implements InputProcessor{
 	public boolean keyDown(int keycode) {
 		
 		app.tiempo = 0.08f;
-		
+
+		if(keycode == Keys.W) {
+			arriba = true;
+		}
+
+		if(keycode == Keys.D) {
+			derecha = true;
+		} else if(keycode == Keys.A) {
+			izquierda = true;
+		}
+
 		if(nroPlayer == 1) {
 			if(keycode == Keys.W) {
 				arriba = true;
 			}
-			
+
 			if(keycode == Keys.D) {
-				derecha = true; 
+				derecha = true;
 			} else if(keycode == Keys.A) {
-				izquierda = true; 
+				izquierda = true;
 			}
 		
 		}
@@ -95,18 +106,15 @@ public class EntradasPjUno implements InputProcessor{
 	@Override
 	public boolean keyUp(int keycode) {
 		app.tiempo = 0.08f;
-		
+
 		if(keycode == Keys.W) {
 			arriba = false;
-			hc.enviaerMensaje("DejeApretarArriba");
-		} 
-		
+		}
+
 		if(keycode == Keys.D) {
-			derecha = false; 
-			hc.enviaerMensaje("DejeApretarDerecha");
+			derecha = false;
 		} else if(keycode == Keys.A) {
-			izquierda = false; 
-			hc.enviaerMensaje("DejeApretarIzquierda");
+			izquierda = false;
 		}
 		
 		if(keycode == Keys.ENTER) {
